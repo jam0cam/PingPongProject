@@ -2,7 +2,6 @@ package com.elasticbeanstalk.honey.pingpong;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,18 +21,13 @@ import com.pingpong.Series;
 
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by jitse on 9/11/13.
  */
-public class MainFragment extends Fragment implements SeriesFragment.SeriesEventListener, GamesFragment.SeriesEventListener {
-
-    protected ProgressDialog pd;
-    protected SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-    protected SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+public class MainFragment extends BaseFragment implements SeriesFragment.SeriesEventListener, GamesFragment.SeriesEventListener {
 
     private Game game;
     private ArrayList<Game> games;
@@ -48,6 +42,12 @@ public class MainFragment extends Fragment implements SeriesFragment.SeriesEvent
 
     private SeriesFragment frgPPSeries;
     private GamesFragment frgPPGames;
+
+    private MainFragmentListener mainFragmentListener;
+
+    public interface MainFragmentListener {
+        public void onSuccess(Game game);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -181,11 +181,12 @@ public class MainFragment extends Fragment implements SeriesFragment.SeriesEvent
         frgPPGames.updateGames(game);
         frgPPSeries.updateSeries(game);
 
+        mainFragmentListener.onSuccess(game);
+
         //reset the actual game itself
         game = new Game();
         txtJiaScore.setText("");
         txtMattScore.setText("");
-
     }
 
 
@@ -216,19 +217,10 @@ public class MainFragment extends Fragment implements SeriesFragment.SeriesEvent
         showToastError();
     }
 
-
-    protected void showToastError(){
-        if (pd != null && pd.isShowing()){pd.dismiss();}
-        Toast toast = Toast.makeText(getActivity(), "Error.", Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-
     protected void saveFailed() {
         Toast toast = Toast.makeText(getActivity(), "Failed to save.", Toast.LENGTH_SHORT);
         toast.show();
     }
-
 
     @Override
     public void onDataLoaded(ArrayList<Game> games) {
@@ -238,6 +230,16 @@ public class MainFragment extends Fragment implements SeriesFragment.SeriesEvent
             return;
         }
         if (pd != null && pd.isShowing()){pd.dismiss();}
+    }
+
+    public void setMainFragmentListener(MainFragmentListener mainFragmentListener) {
+        this.mainFragmentListener = mainFragmentListener;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mainFragmentListener = null;
     }
 
 }

@@ -28,6 +28,7 @@ public class GamesFragment extends Fragment {
 
     private ArrayList<Game> games;
     private TextView txtTitle;
+    private boolean isLifeTime = false;
 
     private ListView lvGames;
 
@@ -35,7 +36,6 @@ public class GamesFragment extends Fragment {
     protected SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
 
     private SeriesEventListener listener;
-
 
     public interface SeriesEventListener {
         public void onDataLoaded(ArrayList<Game> games);
@@ -52,7 +52,7 @@ public class GamesFragment extends Fragment {
         }
 
         txtTitle = (TextView)view.findViewById(R.id.txtTitle);
-        if (getActivity() instanceof MainActivity){
+        if (!isLifeTime){
             txtTitle.setText("Recent Games");
         } else {
             txtTitle.setText("Lifetime Games");
@@ -68,7 +68,7 @@ public class GamesFragment extends Fragment {
     public void fetchGames() {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         String url;
-        if (getActivity() instanceof MainActivity){
+        if (!isLifeTime){
             url = getResources().getString(R.string.url_get_recent_games);
         } else {
             url = getResources().getString(R.string.url_get_games);
@@ -120,7 +120,12 @@ public class GamesFragment extends Fragment {
     public void updateGames(Game game) {
         games.remove(games.size()-1);
         games.add(0, game);
-        lvGames.setAdapter(new PingPongGamesListAdapter(this.getActivity(), games));
+        ((PingPongGamesListAdapter)lvGames.getAdapter()).notifyDataSetChanged();
+    }
+
+    public void updateLifetimeGames(Game game) {
+        games.add(0, game);
+        ((PingPongGamesListAdapter)lvGames.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
@@ -137,5 +142,9 @@ public class GamesFragment extends Fragment {
 
     public void setListener(SeriesEventListener listener) {
         this.listener = listener;
+    }
+
+    public void setLifeTime(boolean lifeTime) {
+        isLifeTime = lifeTime;
     }
 }

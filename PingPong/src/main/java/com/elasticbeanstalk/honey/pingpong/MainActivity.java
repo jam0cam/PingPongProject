@@ -6,17 +6,18 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
+
+import com.pingpong.Game;
 
 import java.util.Locale;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements MainFragment.MainFragmentListener{
     private static final int MAIN_POSITION = 0;
     private static final int HISTORY_POSITION = 1;
+
+    private MainFragment mMainFragment;
+    private PingPongStatsFragment mStatsFragment;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,14 +50,9 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private MainFragment.MainFragmentListener getThisActivity(){
+        return this;
     }
-
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -70,21 +66,14 @@ public class MainActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a DummySectionFragment (defined as a static inner class
-            // below) with the page number as its lone argument.
-//            Fragment fragment = new DummySectionFragment();
-//            Bundle args = new Bundle();
-//            args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
-//            fragment.setArguments(args);
-
             switch (position){
                 case MAIN_POSITION:
-                    MainFragment fragment = new MainFragment();
-                    return fragment;
+                    mMainFragment = new MainFragment();
+                    mMainFragment.setMainFragmentListener(getThisActivity());
+                    return mMainFragment;
                 case HISTORY_POSITION:
-                    PingPongStatsFragment statsFragment = new PingPongStatsFragment();
-                    return statsFragment;
+                     mStatsFragment = new PingPongStatsFragment();
+                    return mStatsFragment;
                 default:
                     return null;
             }
@@ -103,35 +92,14 @@ public class MainActivity extends FragmentActivity {
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }
     }
 
-    /**
-     * A dummy fragment representing a section of the app, but that simply
-     * displays dummy text.
-     */
-    public static class DummySectionFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        public static final String ARG_SECTION_NUMBER = "section_number";
-
-        public DummySectionFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
-            TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
-            dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
+    @Override
+    public void onSuccess(Game game) {
+        //when we successfully save a game, we have to update the lifetime series, so we don't have to make another network call
+        mStatsFragment.updateStats(game);
     }
-
 }

@@ -2,20 +2,17 @@ package com.elasticbeanstalk.honey.pingpong;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.pingpong.Game;
 import com.pingpong.Series;
 
 import java.util.ArrayList;
 
-public class PingPongStatsFragment extends Fragment implements SeriesFragment.SeriesEventListener, GamesFragment.SeriesEventListener {
+public class PingPongStatsFragment extends BaseFragment implements SeriesFragment.SeriesEventListener, GamesFragment.SeriesEventListener {
 
-    protected ProgressDialog pd;
     private SeriesFragment frgPPSeries;
     private GamesFragment frgPPGames;
 
@@ -26,7 +23,7 @@ public class PingPongStatsFragment extends Fragment implements SeriesFragment.Se
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View rootView = inflater.inflate(R.layout.activity_ping_pong_stats, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_ping_pong_stats, container, false);
         if (savedInstanceState != null) {
             games = (ArrayList<Game>)savedInstanceState.getSerializable("games");
             series = (Series)savedInstanceState.getSerializable("series");
@@ -39,10 +36,13 @@ public class PingPongStatsFragment extends Fragment implements SeriesFragment.Se
         frgPPGames = (GamesFragment)getFragmentManager().findFragmentById(R.id.frgPPGamesStats);
         frgPPGames.setRetainInstance(true);
         frgPPGames.setListener(this);
+        frgPPGames.setLifeTime(true);
 
         if (games == null) {
             //just have to show this while the fragments load
-            pd = ProgressDialog.show(getActivity(), "Fetching Games", "Loading");
+            if (pd != null && !pd.isShowing()){
+                pd = ProgressDialog.show(getActivity(), "Fetching Lifetime Stats", "Loading");
+            }
             frgPPSeries.fetchSeries();
             frgPPGames.fetchGames();
         }
@@ -72,15 +72,6 @@ public class PingPongStatsFragment extends Fragment implements SeriesFragment.Se
         showToastError();
     }
 
-
-    protected void showToastError(){
-        if (pd != null && pd.isShowing()){pd.dismiss();}
-        Toast toast = Toast.makeText(getActivity(), "Error.", Toast.LENGTH_SHORT);
-        toast.show();
-    }
-
-
-
     @Override
     public void onDataLoaded(Series series) {
         this.series = series;
@@ -89,5 +80,10 @@ public class PingPongStatsFragment extends Fragment implements SeriesFragment.Se
             return;
         }
         if (pd != null && pd.isShowing()){pd.dismiss();}
+    }
+
+    public void updateStats(Game game) {
+        frgPPSeries.updateSeries(game);
+        frgPPGames.updateLifetimeGames(game);
     }
 }
