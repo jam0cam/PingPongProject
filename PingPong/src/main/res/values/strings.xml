@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PingPong</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_section1">Main</string>
+    <string name="title_section2">Life Time</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="url_get_games">http://honey.elasticbeanstalk.com/pingpong/service/games</string>
+    <string name="url_get_series">http://honey.elasticbeanstalk.com/pingpong/service/series</string>
+    <string name="url_get_recent_games">http://honey.elasticbeanstalk.com/pingpong/service/recentGames</string>
+    <string name="url_save_game">http://honey.elasticbeanstalk.com/pingpong/service/save</string>
+
+    <string name="title_activity_ping_pong">Ping Pong Series</string>
+    <string name="title_activity_ppstats">Ping Pong Stats</string>
+    <string name="title_activity_ping_pong_stats">Ping Pong Stats</string>
+    <string name="title_activity_recent_history">Recent History</string>
+
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_sum">Both scores must add up to 5</string>
+</resources>
