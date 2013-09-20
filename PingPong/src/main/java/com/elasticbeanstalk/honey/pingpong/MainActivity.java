@@ -14,9 +14,11 @@ import java.util.Locale;
 public class MainActivity extends FragmentActivity implements MainFragment.MainFragmentListener{
     private static final int MAIN_POSITION = 0;
     private static final int HISTORY_POSITION = 1;
+    private static final int PERKS_POSITION = 2;
 
     private MainFragment mMainFragment;
     private PingPongStatsFragment mStatsFragment;
+    private PerksFragment mPerksFragment;
 
 
     /**
@@ -74,6 +76,9 @@ public class MainActivity extends FragmentActivity implements MainFragment.MainF
                 case HISTORY_POSITION:
                      mStatsFragment = new PingPongStatsFragment();
                     return mStatsFragment;
+                case PERKS_POSITION:
+                    mPerksFragment = new PerksFragment();
+                    return mPerksFragment;
                 default:
                     return null;
             }
@@ -81,7 +86,7 @@ public class MainActivity extends FragmentActivity implements MainFragment.MainF
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -92,6 +97,8 @@ public class MainActivity extends FragmentActivity implements MainFragment.MainF
                     return getString(R.string.title_section1).toUpperCase(l);
                 case 1:
                     return getString(R.string.title_section2).toUpperCase(l);
+                case 2:
+                    return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
         }

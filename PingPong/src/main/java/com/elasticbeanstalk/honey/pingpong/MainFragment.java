@@ -33,6 +33,7 @@ public class MainFragment extends BaseFragment implements SeriesFragment.SeriesE
     private ArrayList<Game> games;
     private Series series;
     private Button btnSave;
+    private View rootView;
 
     private EditText txtMattScore;
     private EditText txtJiaScore;
@@ -52,7 +53,13 @@ public class MainFragment extends BaseFragment implements SeriesFragment.SeriesE
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        super.onCreate(savedInstanceState);
+
+        if (rootView == null) {
+            rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        } else {
+            ((ViewGroup) rootView.getParent()).removeView(rootView);
+        }
 
         txtMattScore = (EditText)rootView.findViewById(R.id.txtMattScore);
         txtJiaScore = (EditText)rootView.findViewById(R.id.txtJiaScore);
@@ -138,7 +145,6 @@ public class MainFragment extends BaseFragment implements SeriesFragment.SeriesE
                 rval = true;
             }
         }
-
 
         return rval;
     }

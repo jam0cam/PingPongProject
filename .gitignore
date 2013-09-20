@@ -2,5 +2,6 @@
 /local.properties
 /.idea/workspace.xml
 .idea*
+*.apk
 *.iml
 .DS_Store
