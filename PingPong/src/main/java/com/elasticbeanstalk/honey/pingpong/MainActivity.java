@@ -108,5 +108,8 @@ public class MainActivity extends FragmentActivity implements MainFragment.MainF
     public void onSuccess(Game game) {
         //when we successfully save a game, we have to update the lifetime series, so we don't have to make another network call
         mStatsFragment.updateStats(game);
+        if(mPerksFragment != null) {
+            mPerksFragment.updateStats(game);
+        }
     }
 }

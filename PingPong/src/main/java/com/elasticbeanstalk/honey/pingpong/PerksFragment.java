@@ -12,13 +12,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.pingpong.Game;
 import com.pingpong.Lunches;
 import com.pingpong.Sweeps;
 
 import org.json.JSONObject;
 
 public class PerksFragment extends BaseFragment {
-private Sweeps sweeps;
+    private Sweeps sweeps;
     private Lunches lunches;
 
     private GridView mattGvSweep;
@@ -127,6 +128,28 @@ private Sweeps sweeps;
         });
 
         queue.add(request);
+    }
+
+    /**
+     * THis is called from the parent to let us know that things have changed.
+     * @param game
+     */
+    public void updateStats(Game game) {
+        if (game.getPlayer1Score() == 5){
+            incrementSweep(game.getPlayer1().getName());
+            fetchSweepsSuccess();
+        } else if (game.getPlayer2Score() == 5) {
+            incrementSweep(game.getPlayer2().getName());
+            fetchSweepsSuccess();
+        }
+    }
+
+    private void incrementSweep(String playerName) {
+        if (sweeps.getPlayer1().getName().equals(playerName)){
+            sweeps.setPlayer1Score(sweeps.getPlayer1Score() + 1);
+        } else {
+            sweeps.setPlayer2Score(sweeps.getPlayer2Score() + 1);
+        }
     }
 
 }
